@@ -1,53 +1,63 @@
-# daybrake-custom-framework
-daybrake custom framework for zombie like five m framework
-
-
-
 # 🌲 Daybrake Custom Framework
 
 Welcome to the **Daybrake Custom Framework**, a high-performance, immersive survival framework for FiveM. Designed with a gritty, tactical aesthetic, Daybrake focuses on deep survival mechanics, high-stakes inventory management, and a clutter-free gameplay experience.
 
 ---
 
-## 🎒 Key Features
+## 📦 Framework Architecture
 
-### 1. Tactical Inventory System (`daybrake-inventory`)
-- **DayZ Style Layout**: Grid-based inventory with dedicated equipment slots for headgear, masks, vests, backpacks, and more.
-- **Side-by-Side Weapon Slots**: Quick access to Primary, Secondary, and Melee weapons in a streamlined horizontal layout.
-- **Dynamic Weight System**: Carrying too much gear will realistically affect your character's movement speed and ability to sprint.
-- **Interactive Quickbar**: Toggleable HUD element (press `Z`) for fast item usage, integrated directly into the bottom of the inventory UI.
-- **Ground Loot & Proximity**: Dropped items appear in the "Ground" panel when nearby, allowing for seamless scavenging.
-- **Disabled Weapon Wheel**: The standard GTA weapon wheel is disabled, forcing players to use their inventory for a more immersive experience.
+The framework is composed of several modular resources designed to work together seamlessly:
 
-### 2. Core Framework (`daybrake-core`)
-- **Shared Item Database**: A centralized [items.lua](file:///d:/server/txData/FiveMBasicServerCFXDefault_AD5DB5.base/resources/%5Bdaybrake%5D/daybrake-core/shared/items.lua) containing definitions for food, medical supplies, weapons, tools, and clothing.
-- **Consumable Logic**: Integrated handling for eating, drinking, and using medical items like bandages and morphine.
-- **Item Metadata**: Support for durability, stack sizes, and custom item descriptions.
+### 1. 🏗️ Core Framework (`daybrake-core`)
+The backbone of the entire ecosystem.
+- **Player Management**: Custom player data handling, health/thirst/hunger systems, and persistent database storage.
+- **Shared Database**: Centralized configuration for items, vehicles, and world settings.
+- **Utility Library**: Shared functions for both client and server to ensure consistent behavior across all modules.
+- **Database**: Optimized SQL structure for high-concurrency survival gameplay.
+
+### 2. 🎒 Tactical Inventory (`daybrake-inventory`)
+A robust, DayZ-inspired inventory system.
+- **Grid-Based Storage**: Visual grid system for item management.
+- **Specialized Slots**: Dedicated equipment slots (Headgear, Vest, Backpack, etc.).
+- **Horizontal Weapons**: Side-by-side Primary, Secondary, and Melee weapon slots.
+- **Survival Mechanics**: Dynamic weight penalties affecting movement and stamina.
+- **Quickbar**: Integrated HUD element (press `Z`) for fast access to essential items.
+
+### 3. 👥 Multicharacter System (`daybrake-multicharacter`)
+Immersive character selection and creation.
+- **Zombie Survival Theme**: Custom UI designed to fit the apocalypse aesthetic.
+- **Character Persistence**: Deep integration with the core for seamless data loading.
+- **Validation**: Built-in name validation and profanity filtering.
+
+### 4. 🗺️ Spawn Selector (`daybrake-spawnselector`)
+Control where your survival journey begins.
+- **Tactical Spawning**: Allows players to choose their starting location based on the server's survival zones.
+- **Integration**: Works directly with the multicharacter and core systems to ensure a smooth onboarding flow.
 
 ---
 
-## ⌨️ Controls
+## ⌨️ Global Controls
 
 | Key | Action |
 |-----|--------|
 | **TAB** | Open / Close Inventory |
-| **ESC** | Close Inventory |
-| **Z** | Toggle Quickbar Visibility |
-| **1 - 0** | Use Quickbar Slots |
-| **Right Click** | Item Context Menu (Use, Split, Drop) |
+| **ESC** | Close Menu / Exit UI |
+| **Z** | Toggle Quickbar HUD |
+| **1 - 0** | Use Quickbar Item |
+| **Right Click** | Item Actions (Use, Split, Drop) |
 
 ---
 
-## 🛠️ Admin Commands
+## 🛠️ Administrative Tools
 
-Administrators can use the following commands (requires `inventory.admin` ACE permission):
+Administrators can manage the world using built-in commands (requires appropriate ACE permissions):
 
-- `/giveitem <playerID> <itemName> <amount>` - Grant items from the core database.
-- `/clearinv <playerID>` - Completely wipe a player's inventory.
-- `/openinventory <playerID>` - Remotely view and manage a player's gear.
+- `/giveitem <id> <item> <amount>` - Grant items to players.
+- `/clearinv <id>` - Wipe player gear.
+- `/openinventory <id>` - View player inventory remotely.
 
-### ACE Setup
-Add this to your `server.cfg`:
+### ACE Configuration
+Ensure your `server.cfg` includes the necessary permissions for your admin groups:
 ```bash
 add_ace group.admin command.giveitem allow
 add_ace group.admin command.clearinv allow
@@ -56,16 +66,25 @@ add_ace group.admin command.openinventory allow
 
 ---
 
-## 🚀 Installation & Development
+## 🚀 Installation & Setup
 
 ### Requirements
-- FiveM Server (latest artifacts recommended)
-- `daybrake-core` (must start before other modules)
+- Latest FiveM Server Artifacts
+- `oxmysql` (Database Driver)
+- `ox_lib` (UI & Utils)
 
-### Starting Resources
+### Start Order
+Resources **must** be started in this order to ensure proper initialization:
 ```bash
+# Dependencies
+ensure oxmysql
+ensure ox_lib
+
+# Daybrake Framework
 ensure daybrake-core
 ensure daybrake-inventory
+ensure daybrake-multicharacter
+ensure daybrake-spawnselector
 ```
 
 ---
